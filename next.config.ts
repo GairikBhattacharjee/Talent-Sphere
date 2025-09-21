@@ -4,6 +4,6 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   // Ensure this is NOT set to 'export'
-  output: 'standalone', // Optional: Only if you need standalone output
+  // output: 'standalone', // Optional: Only if you need standalone output
 };
 export default nextConfig;
