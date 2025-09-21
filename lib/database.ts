@@ -65,7 +65,7 @@ export interface AIGuidanceSession {
   created_at: string
 }
 
-// Job functions
+// ===================== Job functions =====================
 export async function createJob(job: Omit<Job, "id" | "created_at" | "updated_at">) {
   await sql`
     CREATE TABLE IF NOT EXISTS jobs (
@@ -142,7 +142,7 @@ export async function getJobById(id: number) {
   return result[0] as Job | undefined
 }
 
-// Application functions
+// ===================== Application functions =====================
 export async function createApplication(application: Omit<Application, "id" | "created_at">) {
   await sql`
     CREATE TABLE IF NOT EXISTS applications (
@@ -191,9 +191,9 @@ export async function getUserApplications(userEmail: string) {
   return result
 }
 
-// Quiz functions
+// ===================== Quiz functions =====================
 export async function saveQuizResult(result: Omit<QuizResult, "id" | "created_at">) {
-   await sql`
+  await sql`
     CREATE TABLE IF NOT EXISTS quiz_results (
       id SERIAL PRIMARY KEY,
       user_email TEXT NOT NULL,
@@ -215,7 +215,7 @@ export async function saveQuizResult(result: Omit<QuizResult, "id" | "created_at
 }
 
 export async function getUserQuizResults(userEmail: string) {
-   await sql`
+  await sql`
     CREATE TABLE IF NOT EXISTS quiz_results (
       id SERIAL PRIMARY KEY,
       user_email TEXT NOT NULL,
@@ -236,7 +236,7 @@ export async function getUserQuizResults(userEmail: string) {
   return result as QuizResult[]
 }
 
-// PYQ functions
+// ===================== PYQ functions =====================
 export async function getPYQs(company?: string, category?: string, limit = 20) {
   await sql`
     CREATE TABLE IF NOT EXISTS pyqs (
@@ -252,23 +252,39 @@ export async function getPYQs(company?: string, category?: string, limit = 20) {
       created_at TIMESTAMP DEFAULT NOW()
     );
   `
-  let query = `SELECT * FROM pyqs WHERE 1=1`
-  const params: any[] = []
+
+  if (company && category) {
+    const result = await sql`
+      SELECT * FROM pyqs WHERE company = ${company} AND category = ${category}
+      ORDER BY RANDOM()
+      LIMIT ${limit}
+    `
+    return result as PYQ[]
+  }
 
   if (company) {
-    query += ` AND company = $${params.length + 1}`
-    params.push(company)
+    const result = await sql`
+      SELECT * FROM pyqs WHERE company = ${company}
+      ORDER BY RANDOM()
+      LIMIT ${limit}
+    `
+    return result as PYQ[]
   }
 
   if (category) {
-    query += ` AND category = $${params.length + 1}`
-    params.push(category)
+    const result = await sql`
+      SELECT * FROM pyqs WHERE category = ${category}
+      ORDER BY RANDOM()
+      LIMIT ${limit}
+    `
+    return result as PYQ[]
   }
 
-  query += ` ORDER BY RANDOM() LIMIT $${params.length + 1}`
-  params.push(limit)
-
-  const result = await sql(query, ...params)
+  const result = await sql`
+    SELECT * FROM pyqs
+    ORDER BY RANDOM()
+    LIMIT ${limit}
+  `
   return result as PYQ[]
 }
 
@@ -308,21 +324,21 @@ export async function getCategories(company?: string) {
       created_at TIMESTAMP DEFAULT NOW()
     );
   `
-  let query = `SELECT DISTINCT category FROM pyqs`
-  const params: any[] = []
 
   if (company) {
-    query += ` WHERE company = $${params.length + 1}`
-    params.push(company)
+    const result = await sql`
+      SELECT DISTINCT category FROM pyqs WHERE company = ${company} ORDER      BY category
+    `
+    return result.map((r) => r.category) as string[]
   }
 
-  query += ` ORDER BY category`
-
-  const result = await sql(query, ...params)
+  const result = await sql`
+    SELECT DISTINCT category FROM pyqs ORDER BY category
+  `
   return result.map((r) => r.category) as string[]
 }
 
-// AI Guidance functions
+// ===================== AI Guidance functions =====================
 export async function saveAIGuidanceSession(session: Omit<AIGuidanceSession, "id" | "created_at">) {
   await sql`
     CREATE TABLE IF NOT EXISTS ai_guidance_sessions (

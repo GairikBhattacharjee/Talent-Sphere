@@ -1,13 +1,7 @@
 import { JobDetails } from "@/components/job-details"
 import { Navigation } from "@/components/navigation"
 
-interface JobPageProps {
-  params: {
-    id: string
-  }
-}
-
-export default function JobPage({ params }: JobPageProps) {
+export default function JobPage({ params }: any) {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -17,3 +11,4 @@ export default function JobPage({ params }: JobPageProps) {
     </div>
   )
 }
+

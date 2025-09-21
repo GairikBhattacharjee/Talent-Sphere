@@ -27,7 +27,7 @@ export default function PYQsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
   const [currentIndex, setCurrentIndex] = useState(0)
   const [showAnswer, setShowAnswer] = useState(false)
-  const [selectedAnswer, setSelectedAnswer] = useState<string>("")
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
   const [score, setScore] = useState(0)
   const [answeredQuestions, setAnsweredQuestions] = useState<Set<number>>(new Set())
   const [loading, setLoading] = useState(true)
@@ -80,7 +80,7 @@ export default function PYQsPage() {
       setPyqs(data)
       setCurrentIndex(0)
       setShowAnswer(false)
-      setSelectedAnswer("")
+      setSelectedAnswer(null)
       setScore(0)
       setAnsweredQuestions(new Set())
     } catch (error) {
@@ -112,7 +112,7 @@ export default function PYQsPage() {
     if (currentIndex < pyqs.length - 1) {
       setCurrentIndex(currentIndex + 1)
       setShowAnswer(false)
-      setSelectedAnswer("")
+      setSelectedAnswer(null)
     }
   }
 
@@ -120,7 +120,7 @@ export default function PYQsPage() {
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1)
       setShowAnswer(false)
-      setSelectedAnswer("")
+      setSelectedAnswer(null)
     }
   }
 
@@ -300,7 +300,10 @@ export default function PYQsPage() {
 
                   <div className="flex gap-2">
                     {!showAnswer ? (
-                      <Button onClick={handleSubmitAnswer} disabled={!selectedAnswer && currentPYQ.options}>
+                      <Button
+                        onClick={handleSubmitAnswer}
+                        disabled={!selectedAnswer && Boolean(currentPYQ.options)}
+                      >
                         {currentPYQ.options ? "Submit Answer" : "Show Explanation"}
                       </Button>
                     ) : (

@@ -68,6 +68,11 @@ export function ApplicationForm({ job, onBack }: ApplicationFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!user) {
+      alert("You must be signed in to submit an application.")
+      return
+    }
+
     setIsSubmitting(true)
 
     try {

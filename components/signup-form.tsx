@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,8 +12,19 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/hooks/use-auth"
 
+type UserType = "job-seeker" | "employer" | "both"
+
+interface SignupFormData {
+  firstName: string
+  lastName: string
+  email: string
+  password: string
+  confirmPassword: string
+  userType: UserType | ""
+}
+
 export function SignupForm() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<SignupFormData>({
     firstName: "",
     lastName: "",
     email: "",
@@ -30,7 +40,7 @@ export function SignupForm() {
   const { signup } = useAuth()
   const router = useRouter()
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: keyof SignupFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
@@ -51,13 +61,19 @@ export function SignupForm() {
       return
     }
 
+    if (!formData.userType) {
+      setError("Please select a user type")
+      setIsLoading(false)
+      return
+    }
+
     try {
       const success = await signup({
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
         password: formData.password,
-        userType: formData.userType,
+        userType: formData.userType as UserType, // cast safely
       })
 
       if (success) {
@@ -65,7 +81,7 @@ export function SignupForm() {
       } else {
         setError("Email already exists")
       }
-    } catch (error) {
+    } catch {
       setError("An error occurred. Please try again.")
     } finally {
       setIsLoading(false)
