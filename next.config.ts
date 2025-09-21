@@ -1,10 +1,9 @@
 import type { NextConfig } from "next";
-
 const nextConfig: NextConfig = {
   eslint: {
-    // ✅ tells Next.js to skip ESLint during builds
     ignoreDuringBuilds: true,
   },
+  // Ensure this is NOT set to 'export'
+  output: 'standalone', // Optional: Only if you need standalone output
 };
-
 export default nextConfig;
