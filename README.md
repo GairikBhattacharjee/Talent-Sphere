@@ -1,6 +1,6 @@
 # TalentSphere
 
-TalentSphere is a job search and career development platform.  It allows users to search for jobs, post jobs, take AI-powered skills quizzes, access past year question (PYQ) resources, and receive AI career guidance.
+TalentSphere is a job search and career development platform. It allows users to search for jobs, post jobs, take AI-powered skills quizzes, access past year question (PYQ) resources, and receive AI career guidance.
 
 ## Features
 
